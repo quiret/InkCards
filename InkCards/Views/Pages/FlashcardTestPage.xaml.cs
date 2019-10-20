@@ -79,12 +79,17 @@ namespace InkCards.Views.Pages
                 var revealStoryboard = (Storyboard)this.Resources["RevealCardStoryboard"];
                 //Storyboard.SetTarget()
                 //revealStoryboard.Begin();
+
+                this.JottingSpace.InkPresenter.IsInputEnabled = false;
             }
 
             if (e.PropertyName == nameof(this.ViewModel.IsRevealed) && !this.ViewModel.IsRevealed)
             {
                 var revealStoryboard = (Storyboard)this.Resources["RevealCardStoryboard"];
-                revealStoryboard.ToString();
+                //revealStoryboard.ToString();
+
+                this.JottingSpace.InkPresenter.IsInputEnabled = true;
+                this.JottingSpace.InkPresenter.StrokeContainer.Clear();
             }
         }
 
@@ -116,6 +121,8 @@ namespace InkCards.Views.Pages
 
         private void OnPageSizeChanged(SizeChangedEventArgs e)
         {
+            double newDrawAreaWidth, newDrawAreaHeight;
+
             if(this.ViewModeStates.CurrentState == this.CompactOverlayState)
             {
                 // Determines whether the card will be displayed with vertical or horizontal paddings
@@ -130,14 +137,20 @@ namespace InkCards.Views.Pages
                     ? (10 / (double)18) * e.NewSize.Width
                     : e.NewSize.Height - 60;
 
-                this.CardPreview.Width = newWidth;
-                this.CardPreview.Height = newHeight;
+                newDrawAreaWidth = newWidth;
+                newDrawAreaHeight = newHeight;
             }
             else
             {
-                this.CardPreview.Width = (double)App.Current.Resources["InkCardWidth"];
-                this.CardPreview.Height = (double)App.Current.Resources["InkCardHeight"];
+                newDrawAreaWidth = (double)App.Current.Resources["InkCardWidth"];
+                newDrawAreaHeight = (double)App.Current.Resources["InkCardHeight"];
             }
+
+            this.CardPreview.Width = newDrawAreaWidth;
+            this.CardPreview.Height = newDrawAreaHeight;
+
+            this.JottingSpace.Width = newDrawAreaWidth;
+            this.JottingSpace.Height = newDrawAreaHeight;
 
             this.CardPreview.Render();
         }

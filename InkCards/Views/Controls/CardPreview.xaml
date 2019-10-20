@@ -21,13 +21,6 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Tapped="UserControl_Tapped"/>
-
-            <Rectangle
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Fill="Transparent"
-                IsHitTestVisible="True"
-                Tapped="UserControl_Tapped" />
         </Grid>
     </controls:DropShadowPanel>
 </UserControl>

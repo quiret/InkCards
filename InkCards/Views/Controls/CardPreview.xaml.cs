@@ -210,6 +210,8 @@ namespace InkCards.Views.Controls
             if (!this.AllowFlipOnTapped) return;
 
             this.IsFlipped = !this.IsFlipped;
+
+            if (!this.RenderManually) this.Render();
         }
 
         #region INotifyPropertyChanged

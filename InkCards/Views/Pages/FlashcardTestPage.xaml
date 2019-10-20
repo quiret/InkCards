@@ -73,7 +73,7 @@
                         <Setter Target="RevealButton.Padding" Value="12" />
                         <Setter Target="RevealButton.Margin" Value="0" />
                         <Setter Target="RevealButton.VerticalAlignment" Value="Bottom" />
-                        
+
                         <Setter Target="GuessedButtonsPanel.VerticalAlignment" Value="Bottom" />
                         <Setter Target="GuessedCorrectlyButton.Padding" Value="24 12" />
                         <Setter Target="GuessedCorrectlyButton.Margin" Value="0" />
@@ -85,7 +85,7 @@
                         <Setter Target="CardFrontTextBlock.FontSize" Value="14" />
                         <Setter Target="CardFrontTextBlock.Margin" Value="12" />
                         <Setter Target="CardFrontTextBlock.(Grid.Row)" Value="2" />
-                        
+
                         <Setter Target="CardBackTextBlock.HorizontalAlignment" Value="Left" />
                         <Setter Target="CardBackTextBlock.FontSize" Value="14" />
                         <Setter Target="CardBackTextBlock.Margin" Value="12" />
@@ -128,6 +128,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
@@ -152,8 +153,8 @@
                 <interactivity:Interaction.Behaviors>
                     <interactions:EventTriggerBehavior EventName="Tapped">
                         <interactions:CallMethodAction
-                            TargetObject="{x:Bind CardPreview}" 
-                            MethodName="Flip"/>
+                            TargetObject="{x:Bind ViewModel}" 
+                            MethodName="FlipIfRevealed"/>
                     </interactions:EventTriggerBehavior>
                 </interactivity:Interaction.Behaviors>
             </controls:CardPreview>
@@ -190,6 +191,7 @@
                 x:Name="GuessedButtonsPanel"
                 Grid.Row="2"
                 HorizontalAlignment="Center"
+                Height="Auto"
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.IsRevealed, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}">
                 <Button
@@ -212,6 +214,38 @@
                         FontSize="36" />
                 </Button>
             </StackPanel>
+
+            <Grid
+                Grid.Row="3"
+                BorderThickness="1"
+                BorderBrush="{ThemeResource LightGrayBrush}"
+                Background="{StaticResource CardBackgroundBrush}"
+                Visibility="{Binding Path=IsInCompactOverlayMode, Converter={StaticResource FalseToVisibleConverter}}"
+                >
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <InkToolbar
+                    VerticalAlignment="Center"
+                    TargetInkCanvas="{x:Bind JottingSpace}"
+                    Background="{ThemeResource CardBackgroundBrush}"
+                    BorderBrush="{StaticResource LightGrayBrush}"
+                    BorderThickness="1"
+                    />
+
+                <InkCanvas
+                    x:Name="JottingSpace"
+                    Grid.Row="1"
+                    Width="{StaticResource InkCardWidth}"
+                    Height="{StaticResource InkCardHeight}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top" Margin="0,1,0,0" Grid.RowSpan="2"
+                   
+                />
+            </Grid>
         </Grid>
 
         <StackPanel
@@ -244,7 +278,7 @@
                         Foreground="{ThemeResource LightGrayBrush}"
                         Visibility="{x:Bind IsInCompactOverlayMode, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}"/>
                 </Grid>
-                
+
             </Button>
         </StackPanel>
     </Grid>

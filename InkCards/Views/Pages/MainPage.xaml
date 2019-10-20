@@ -175,7 +175,7 @@
                             Grid.Column="0"
                             HorizontalAlignment="Left"
                             Margin="12"
-                            Foreground="Gray"
+                            Foreground="Black"
                             ToolTipService.ToolTip="Multiselect mode - learn multiple collections at once."
                             Style="{StaticResource DefaultToggleButtonStyle}">
                             <FontIcon 
@@ -187,7 +187,7 @@
                             Grid.Column="2"
                             Margin="12 14 12 12"
                             HorizontalAlignment="Right"
-                            Foreground="Gray"
+                            Foreground="Black"
                             Style="{StaticResource AddToListButtonStyle}"
                             ToolTipService.ToolTip="Create a new collection of cards"
                             Click="{x:Bind ViewModel.NavigateToNewCardCollectionEdit}">
