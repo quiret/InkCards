@@ -5,3 +5,6 @@ Some of the interesting pieces of the app:
 - Lots of operations with ink. Saving and loading ink, intelligently scaling it, programatically changing ink colors in dark mode among others.
 - Support for picture-in-picture during testing
 - Uses SQLite for UWP and Entity Framework Core for storage
+
+## Dependencies
+Uses the GalaSort MVVM Toolkit for cross-platform development.
