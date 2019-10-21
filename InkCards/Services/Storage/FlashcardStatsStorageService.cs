@@ -36,12 +36,13 @@ namespace InkCards.Services.Storage
         {
             using (var context = new MainDatabaseContext())
             {
-                var orderedImpressions = await context.CardImpressions
+                var set = context.CardImpressions;
+                var orderedImpressions = set
                     .Where(x => cards.Any(y => y == x.CardId))
                     .GroupBy(x => x.CardId)
                     .OrderBy(x => x.Max(y => y.Date))
                     .Select(x => x.Key)
-                    .ToListAsync();
+                    .ToList();
 
                 var newCards = cards.Except(orderedImpressions);
                 return newCards.Union(orderedImpressions).ToList();
