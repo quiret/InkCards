@@ -5,7 +5,7 @@ using InkCards.Services.Navigation;
 using InkCards.Services.Storage;
 using InkCards.Services.Testing;
 using InkCards.ViewModels.Pages.Args;
-using Microsoft.Toolkit.Uwp;
+using Microsoft.Toolkit.Uwp.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,6 +23,7 @@ namespace InkCards.ViewModels.Pages
         private readonly ICardImpressionsStorageService cardImpressionsStorageService;
         private readonly IFlashcardSessionTestingService flashcardSessionTestingService;
 
+        private ReaderWriterLockSlim lock_cardMutation = new ReaderWriterLockSlim();
         private InkCard card;
         private bool isFlipped;
         private IEnumerable<CardCollection> collection;
@@ -144,22 +145,40 @@ namespace InkCards.ViewModels.Pages
 
         public void Reveal()
         {
-            impressionStopwatch.Stop();
-            this.currentImpression.FrontMillisecondsSpent = GetMillisecondsElapsed();
+            this.lock_cardMutation.EnterWriteLock();
 
-            this.IsFlipped = !this.IsFlipped;
-            this.IsRevealed = true;
+            try
+            {
+                impressionStopwatch.Stop();
+                this.currentImpression.FrontMillisecondsSpent = GetMillisecondsElapsed();
 
-            impressionStopwatch.Restart();
+                this.IsFlipped = !this.IsFlipped;
+                this.IsRevealed = true;
+
+                impressionStopwatch.Restart();
+            }
+            finally
+            {
+                this.lock_cardMutation.ExitWriteLock();
+            }
 
             this.CardUpdated?.Invoke();
         }
 
         public void FlipIfRevealed()
         {
-            if (!this.isRevealed) return;
+            this.lock_cardMutation.EnterWriteLock();
 
-            this.IsFlipped = !this.IsFlipped;
+            try
+            {
+                if (!this.isRevealed) return;
+
+                this.IsFlipped = !this.IsFlipped;
+            }
+            finally
+            {
+                this.lock_cardMutation.ExitWriteLock();
+            }
 
             this.CardUpdated?.Invoke();
         }
@@ -182,32 +201,50 @@ namespace InkCards.ViewModels.Pages
 
         private async Task BeginCardImpression()
         {
-            var nextCardToTest = await this.flashcardSessionTestingService.GetNextFlashcard();
+            this.lock_cardMutation.EnterWriteLock();
 
-            this.IsFlipped = nextCardToTest.CardSideToTest == CardSide.Front;
-            this.IsRevealed = false;
-
-            this.Card = await this.cardStorageService.GetCard(nextCardToTest.CollectionId, nextCardToTest.CardId);
-            this.currentImpression = new CardImpression
+            try
             {
-                CardId = nextCardToTest.CardId,
-                Date = DateTime.Now,
-                TestedSide = nextCardToTest.CardSideToTest
-            };
+                var nextCardToTest = await this.flashcardSessionTestingService.GetNextFlashcard();
 
-            impressionStopwatch.Restart();
+                this.IsFlipped = nextCardToTest.CardSideToTest == CardSide.Front;
+                this.IsRevealed = false;
+
+                this.Card = await this.cardStorageService.GetCard(nextCardToTest.CollectionId, nextCardToTest.CardId);
+                this.currentImpression = new CardImpression
+                {
+                    CardId = nextCardToTest.CardId,
+                    Date = DateTime.Now,
+                    TestedSide = nextCardToTest.CardSideToTest
+                };
+
+                impressionStopwatch.Restart();
+            }
+            finally
+            {
+                this.lock_cardMutation.ExitWriteLock();
+            }
 
             this.CardUpdated?.Invoke();
         }
 
         private async Task EndCardImpression(bool guessedCorrectly)
         {
-            impressionStopwatch.Stop();
+            this.lock_cardMutation.EnterWriteLock();
 
-            this.currentImpression.BackMillisecondsSpent = this.GetMillisecondsElapsed();
-            this.currentImpression.GuessedCorrectly = guessedCorrectly;
+            try
+            {
+                impressionStopwatch.Stop();
 
-            await this.cardImpressionsStorageService.AddImpression(currentImpression);
+                this.currentImpression.BackMillisecondsSpent = this.GetMillisecondsElapsed();
+                this.currentImpression.GuessedCorrectly = guessedCorrectly;
+
+                await this.cardImpressionsStorageService.AddImpression(currentImpression);
+            }
+            finally
+            {
+                this.lock_cardMutation.ExitWriteLock();
+            }
         }
 
         private long GetMillisecondsElapsed()

@@ -88,6 +88,9 @@ namespace InkCards.Views.Controls
 
         public async void Render()
         {
+            //this.PreviewImage.Measure(new Size(System.Double.PositiveInfinity, System.Double.PositiveInfinity));
+            //this.PreviewImage.Arrange(new Rect(0, 0,this.DesiredSize.Width, this.DesiredSize.Height));
+
             this.IsRendered = false;
             this.PreviewImage.Opacity = 0;
 

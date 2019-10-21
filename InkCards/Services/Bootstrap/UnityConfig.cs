@@ -1,7 +1,9 @@
 ﻿using InkCards.Services.Navigation;
 using InkCards.Services.Storage;
 using InkCards.Services.Testing;
-using Microsoft.Practices.Unity;
+using Unity;
+using Unity.Injection;
+using Unity.Lifetime;
 
 namespace InkCards.Services.Bootstrap
 {

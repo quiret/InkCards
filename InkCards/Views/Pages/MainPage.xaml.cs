@@ -1,7 +1,7 @@
 ﻿using InkCards.ViewModels.Pages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Microsoft.Practices.Unity;
+using Unity;
 using System.Linq;
 using InkCards.Views.Controls;
 using Windows.ApplicationModel.Core;

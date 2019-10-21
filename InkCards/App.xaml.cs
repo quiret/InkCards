@@ -3,7 +3,7 @@ using InkCards.Services.Storage.Sqlite;
 using InkCards.Views.Pages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.HockeyApp;
-using Microsoft.Practices.Unity;
+using Unity;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;

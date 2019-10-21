@@ -11,16 +11,27 @@
         BlurRadius="8.0"
         ShadowOpacity="0.15"
         OffsetY="2"
-        Color="{ThemeResource ForegroundColor}">
-        <Grid 
+        Color="Black">
+        <Grid
+            Width="{x:Bind Width, Mode=OneWay}"
+            Height="{x:Bind Height, Mode=OneWay}"
             Background="{ThemeResource CardBackgroundBrush}"
             BorderBrush="{x:Bind BorderBrush, Mode=OneWay}"
             BorderThickness="{x:Bind BorderThickness, Mode=OneWay}">
+
             <InkCanvas
                 x:Name="PreviewImage"
+                Width="Auto"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Tapped="UserControl_Tapped"/>
+
+            <Rectangle
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Fill="Transparent"
+                IsHitTestVisible="True"
+                Tapped="UserControl_Tapped" />
         </Grid>
     </controls:DropShadowPanel>
 </UserControl>

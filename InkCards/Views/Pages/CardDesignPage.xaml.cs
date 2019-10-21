@@ -1,7 +1,7 @@
 ﻿using InkCards.ViewModels.Pages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Microsoft.Practices.Unity;
+using Unity;
 using System.Threading.Tasks;
 using System;
 using Windows.UI.Xaml.Navigation;

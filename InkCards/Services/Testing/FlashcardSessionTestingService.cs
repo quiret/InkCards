@@ -49,15 +49,25 @@ namespace InkCards.Services.Testing
 
             var rankings = this.Cards.SelectMany(x => x.Value).Select(card =>
             {
-                var unseenOrder = orderByUnseenTime.IndexOf(card);
-                var impressionLengthOrder = orderByImpressionLength.IndexOf(card);
-                var unsuccessOrder = orderByUnsuccess.IndexOf(card);
+                int unseenOrder = orderByUnseenTime.IndexOf(card);
+                int impressionLengthOrder = orderByImpressionLength.IndexOf(card);
+                int unsuccessOrder = orderByUnsuccess.IndexOf(card);
 
-                var rank = 
-                    unsuccessOrder * 55 + 
-                    impressionLengthOrder * 10 + 
-                    unseenOrder * 20 + 
-                    random.Next(this.Cards.Count - 1) * 15;
+                int rank;
+
+                if ( this.LastCardId == card )
+                {
+                    // Must not present the same card twice.
+                    rank = System.Int32.MaxValue;
+                }
+                else
+                {
+                    rank =
+                        unsuccessOrder * 55 +
+                        impressionLengthOrder * 10 +
+                        unseenOrder * 20 +
+                        random.Next(this.Cards.Count - 1) * 15;
+                }
 
                 return new
                 {
@@ -68,9 +78,12 @@ namespace InkCards.Services.Testing
             .OrderBy(x => x.Rank)
             .ToList();
 
-            var cardId = this.LastCardId != rankings.First().CardId
-                ? rankings.First().CardId
-                : rankings.Skip(1).First().CardId;
+            if ( rankings.Count == 0 )
+            {
+                throw new InvalidOperationException();
+            }
+
+            var cardId = rankings.First().CardId;
 
             this.LastCardId = cardId;
 
